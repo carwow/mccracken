@@ -65,6 +65,11 @@ module Munson
       end
     end
 
+    # Allow destroying via DELETE
+    def destroy(agent)
+      agent.delete(id: id).success?
+    end
+
     def save(agent)
       response = if id
         agent.patch(id: id.to_s, body: payload)

@@ -44,6 +44,10 @@ class Munson::Resource
     !id.nil?
   end
 
+  def destroy
+    document.destroy(agent)
+  end
+
   def save
     @document = document.save(agent)
     !errors?
