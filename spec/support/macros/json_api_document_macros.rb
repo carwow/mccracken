@@ -1,4 +1,4 @@
-module Munson
+module McCracken
   module RSpec
     module Macros
       module JsonApiDocumentMacros

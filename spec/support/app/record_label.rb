@@ -1,3 +1,3 @@
-# PORO, no client, no munson_initializer
+# PORO, no client, no mccracken_initializer
 class RecordLabel
 end

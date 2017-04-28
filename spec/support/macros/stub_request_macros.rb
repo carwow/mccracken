@@ -1,4 +1,4 @@
-module Munson
+module McCracken
   module RSpec
     module Macros
       module StubRequestMacros
@@ -29,7 +29,7 @@ module Munson
               headers: {
                 'Accept'=>'application/vnd.api+json',
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-                'User-Agent'=>"Munson v#{Munson::VERSION}"
+                'User-Agent'=>"McCracken v#{McCracken::VERSION}"
               }
             ).to_return({
               body: response_body(document_name),
