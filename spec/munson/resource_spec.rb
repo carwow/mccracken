@@ -274,7 +274,17 @@ describe Munson::Resource do
   end
 
   describe '#destroy' do
-    pending "Resource#destroy"
+    it 'DELETEs the resource' do
+      stub_api_request(:artist_9)
+
+      artist = Artist.find(9)
+
+      stub = stub_request(:delete, "http://api.example.com/artists/9").
+        to_return(status: 204)
+
+      expect(artist.destroy).to be true
+      expect(stub).to have_been_requested
+    end
   end
 
   describe '.all' do
