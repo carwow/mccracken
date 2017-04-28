@@ -1,5 +1,5 @@
-# Munson::Resource
-class Artist < Munson::Resource
+# McCracken::Resource
+class Artist < McCracken::Resource
   self.type = :artists
 
   attribute :name, :string
