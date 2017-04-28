@@ -1,17 +1,17 @@
-# Registered type, non-Munson::Resource w/ initialize
+# Registered type, non-McCracken::Resource w/ initialize
 class Album
   attr_accessor :id
   attr_accessor :title
 
-  def self.munson
-    return @munson if @munson
-    @munson = Munson::Client.new
+  def self.mccracken
+    return @mccracken if @mccracken
+    @mccracken = McCracken::Client.new
   end
 
-  munson.type = :albums
-  Munson.register_type(munson.type, self)
+  mccracken.type = :albums
+  McCracken.register_type(mccracken.type, self)
 
-  def self.munson_initializer(document)
+  def self.mccracken_initializer(document)
     new(document)
   end
 

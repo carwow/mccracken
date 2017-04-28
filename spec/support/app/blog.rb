@@ -1,6 +1,6 @@
-class Article < Munson::Resource
+class Article < McCracken::Resource
   self.type = :articles
-  munson.response_key_format = :dasherize
+  mccracken.response_key_format = :dasherize
 
   has_one :author
   has_many :comments
@@ -9,9 +9,9 @@ class Article < Munson::Resource
   attribute :title, :string
 end
 
-class Person < Munson::Resource
+class Person < McCracken::Resource
   self.type = :people
-  munson.response_key_format = :dasherize
+  mccracken.response_key_format = :dasherize
   has_many :articles
 
   attribute :first_name, String
@@ -22,9 +22,9 @@ class Person < Munson::Resource
   attribute :meta, :hash
 end
 
-class Comment < Munson::Resource
+class Comment < McCracken::Resource
   self.type = :comments
-  munson.response_key_format = :dasherize
+  mccracken.response_key_format = :dasherize
   has_one :author
 
   attribute :body, ->(val){ val.to_s }

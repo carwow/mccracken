@@ -87,8 +87,8 @@ RSpec.describe 'Usage' do
     comment = article.comments(true).first #should force reload of comments
   end
 
-  describe 'Artist (Munson::Resource)' do
-    it 'loads other munson resources' do
+  describe 'Artist (McCracken::Resource)' do
+    it 'loads other mccracken resources' do
       stub_api_request(:artist_9_include_albums)
 
       artist = Artist.include(:albums).find(9)
@@ -99,43 +99,43 @@ RSpec.describe 'Usage' do
     it 'loads other registered resources' do
       stub_api_request(:artists)
       artists = Artist.fetch
-      expect(artists).to be_a(Munson::Collection)
+      expect(artists).to be_a(McCracken::Collection)
     end
 
     it 'loads unregistered JSONAPI resources' do
       stub_api_request(:artist_9_include_albums_record_label)
       artist = Artist.include(:albums,:record_label).find(9)
-      expect(artist.record_label).to be_a(Munson::Document)
+      expect(artist.record_label).to be_a(McCracken::Document)
       expect(artist.record_label[:name]).to eq "Capitol Records"
     end
   end
 
   describe 'Album (non-resource)' do
-    it "initializes a Munson::Collectin of albums" do
+    it "initializes a McCracken::Collectin of albums" do
       stub_api_request(:albums)
 
-      albums = Album.munson.fetch
+      albums = Album.mccracken.fetch
       first_album = albums.first
 
-      expect(albums).to be_a(Munson::Collection)
+      expect(albums).to be_a(McCracken::Collection)
       expect(first_album).to be_a(Album)
       expect(first_album.title).to eq "The Crane Wife"
     end
 
     it "finds records by ID" do
       stub_api_request(:album_1_include_artist)
-      album = Album.munson.include(:artist).find(1)
+      album = Album.mccracken.include(:artist).find(1)
       expect(album).to be_a(Album)
       expect(album.title).to eq "The Crane Wife"
     end
   end
 
   describe 'Venues (unregistered, non-resource)' do
-    it "returns Munson::Documents if the class is unregistered" do
+    it "returns McCracken::Documents if the class is unregistered" do
       stub_api_request(:venues)
-      venues = Venue.munson.fetch
-      expect(venues).to be_a(Munson::Collection)
-      expect(venues.first).to be_a(Munson::Document)
+      venues = Venue.mccracken.fetch
+      expect(venues).to be_a(McCracken::Collection)
+      expect(venues.first).to be_a(McCracken::Document)
     end
   end
 end

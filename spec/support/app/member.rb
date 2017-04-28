@@ -1,5 +1,5 @@
-# Munson::Resource
-class Member < Munson::Resource
+# McCracken::Resource
+class Member < McCracken::Resource
   self.type = :members
 
   def name
