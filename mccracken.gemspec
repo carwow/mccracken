@@ -6,8 +6,8 @@ require 'mccracken/version'
 Gem::Specification.new do |spec|
   spec.name          = "mccracken"
   spec.version       = McCracken::VERSION
-  spec.authors       = ["Cory O'Daniel"]
-  spec.email         = ["cory@coryodaniel.com"]
+  spec.authors       = ['Jonathan Gnagy']
+  spec.email         = ['jonathan.gnagy@gmail.com']
 
   spec.summary       = %q{A JSON API Spec client for Ruby}
   spec.homepage      = "http://github.com/coryodaniel/mccracken"
