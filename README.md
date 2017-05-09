@@ -1,8 +1,7 @@
 # McCracken
 
 [![Gem Version](https://badge.fury.io/rb/mccracken.svg)](https://badge.fury.io/rb/mccracken)
-[![Code Climate](https://codeclimate.com/github/jgnagy/mccracken/badges/gpa.svg)](https://codeclimate.com/github/jgnagy/mccracken)
-[![Test Coverage](https://codeclimate.com/github/jgnagy/mccracken/badges/coverage.svg)](https://codeclimate.com/github/jgnagy/mccracken/coverage)
+[![Coverage Status](https://coveralls.io/repos/github/jgnagy/mccracken/badge.svg)](https://coveralls.io/github/jgnagy/mccracken)
 [![Build Status](https://travis-ci.org/jgnagy/mccracken.svg?branch=develop)](https://travis-ci.org/jgnagy/mccracken)
 
 A JSON API client for Ruby.
