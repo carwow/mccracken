@@ -25,7 +25,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'faraday_middleware'
 
   spec.add_development_dependency 'bundler', '~> 1.10'
-  spec.add_development_dependency 'codeclimate-test-reporter', '~> 1.0'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'rspec-mocks'
@@ -33,6 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'pry-byebug' unless defined?(JRUBY_VERSION)
   spec.add_development_dependency 'webmock'
   spec.add_development_dependency 'yard'
+  spec.add_development_dependency 'coveralls'
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'byebug' unless defined?(JRUBY_VERSION)
   spec.add_development_dependency 'rubocop'
