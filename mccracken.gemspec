@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'webmock'
   spec.add_development_dependency 'yard'
   spec.add_development_dependency 'simplecov'
-  spec.add_development_dependency 'byebug'
+  spec.add_development_dependency 'byebug' unless defined?(JRUBY_VERSION)
   spec.add_development_dependency 'rubocop'
   spec.add_development_dependency 'travis', '~> 1.8'
 end
