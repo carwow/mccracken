@@ -12,7 +12,7 @@ describe McCracken::Agent do
     context 'when using a query' do
       it 'returns the parsed response' do
         stub_api_request(:albums_include_artist)
-        
+
         agent = McCracken::Agent.new('/albums')
         params = { include: 'artist' }
 

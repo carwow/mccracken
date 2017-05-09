@@ -8,16 +8,16 @@ describe McCracken::Connection do
     it 'reconfigures the faraday object' do
       connection = McCracken::Connection.new(url: 'http://api.example.com/articles')
 
-      expect{ connection.url = "http://example.com/api/v1/articles" }
-        .to change{connection.faraday.url_prefix.to_s}
+      expect { connection.url = 'http://example.com/api/v1/articles' }
+        .to change { connection.faraday.url_prefix.to_s }
         .from('http://api.example.com/articles')
-        .to("http://example.com/api/v1/articles")
+        .to('http://example.com/api/v1/articles')
     end
   end
 
   describe '#key_format=' do
     context 'when :dasherize' do
-      it "underscores response body keys" do
+      it 'underscores response body keys' do
         stub_api_request(:articles_include_author_comments)
         connection = McCracken::Connection.new(
           response_key_format: :dasherize,
@@ -27,29 +27,29 @@ describe McCracken::Connection do
         body = connection.get.body
         keys = body[:included].first[:attributes].keys
         expect(keys).to eq(
-          [:first_name, :last_name, :twitter, :post_count, :created_at, :meta]
+          %i[first_name last_name twitter post_count created_at meta]
         )
       end
 
-      it "formats request body keys" do
+      it 'formats request body keys' do
         url = 'http://api.example.com/people/9'
         connection = McCracken::Connection.new(response_key_format: :dasherize, url: url)
 
         json = create_payload(:people, {
-          first_name: "Chauncy",
-          last_name: "Tester",
-          twitter: "ChauncyTester"
-        }, id: 9)
+                                first_name: 'Chauncy',
+                                last_name: 'Tester',
+                                twitter: 'ChauncyTester'
+                              }, id: 9)
 
         dasherized_json = create_payload(:people, {
-          "first-name" => "Chauncy",
-          "last-name" => "Tester",
-          "twitter" => "ChauncyTester"
-        }, id: 9)
+                                           'first-name' => 'Chauncy',
+                                           'last-name' => 'Tester',
+                                           'twitter' => 'ChauncyTester'
+                                         }, id: 9)
 
-        stub = stub_request(:post, url).
-          with(body: JSON.dump(dasherized_json)).
-          to_return(body: JSON.dump(dasherized_json))
+        stub = stub_request(:post, url)
+               .with(body: JSON.dump(dasherized_json))
+               .to_return(body: JSON.dump(dasherized_json))
 
         connection.post(body: json)
         expect(stub).to have_been_requested
@@ -57,7 +57,7 @@ describe McCracken::Connection do
     end
 
     context 'when :camelize' do
-      it "underscores response body keys" do
+      it 'underscores response body keys' do
         stub_api_request(:articles_include_author)
         connection = McCracken::Connection.new(
           response_key_format: :camelize,
@@ -65,28 +65,28 @@ describe McCracken::Connection do
         )
         body = connection.get.body
         keys = body[:included].first[:attributes].keys
-        expect(keys).to eq([:first_name, :last_name, :twitter])
+        expect(keys).to eq(%i[first_name last_name twitter])
       end
 
-      it "formats request body keys" do
+      it 'formats request body keys' do
         url = 'http://api.example.com/people/9'
         connection = McCracken::Connection.new(response_key_format: :camelize, url: url)
 
         json = create_payload(:people, {
-          first_name: "Chauncy",
-          last_name: "Tester",
-          twitter: "ChauncyTester"
-        }, id: 9)
+                                first_name: 'Chauncy',
+                                last_name: 'Tester',
+                                twitter: 'ChauncyTester'
+                              }, id: 9)
 
         dasherized_json = create_payload(:people, {
-          "firstName" => "Chauncy",
-          "lastName" => "Tester",
-          "twitter" => "ChauncyTester"
-        }, id: 9)
+                                           'firstName' => 'Chauncy',
+                                           'lastName' => 'Tester',
+                                           'twitter' => 'ChauncyTester'
+                                         }, id: 9)
 
-        stub = stub_request(:post, url).
-          with(body: JSON.dump(dasherized_json)).
-          to_return(body: JSON.dump(dasherized_json))
+        stub = stub_request(:post, url)
+               .with(body: JSON.dump(dasherized_json))
+               .to_return(body: JSON.dump(dasherized_json))
 
         connection.post(body: json)
         expect(stub).to have_been_requested
@@ -97,20 +97,20 @@ describe McCracken::Connection do
   describe '#initialize' do
     before do
       stub_const 'MyRackApp', Class.new do
-        def call(env)
-          [200, {'Content-Type' => 'text/html'}, ["hello world"]]
+        def call(_env)
+          [200, { 'Content-Type' => 'text/html' }, ['hello world']]
         end
       end
     end
 
-    it "configues the faraday connection" do
-      connection = McCracken::Connection.new(url: "http://example.com")
-      expect(connection.faraday.url_prefix.to_s).to eq "http://example.com/"
+    it 'configues the faraday connection' do
+      connection = McCracken::Connection.new(url: 'http://example.com')
+      expect(connection.faraday.url_prefix.to_s).to eq 'http://example.com/'
     end
 
     context 'when passing a block' do
       it 'configures faraday middleware' do
-        connection = McCracken::Connection.new(url: "http://example.com") do |c|
+        connection = McCracken::Connection.new(url: 'http://example.com') do |c|
           c.use TestMiddleware
         end
 

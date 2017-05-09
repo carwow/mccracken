@@ -3,8 +3,9 @@ module McCracken
   #
   # @note
   #   When a JSONAPI collection (data: <Array>) is received it maps the response
-  #   into multiple JSONAPI resource objects (data: <Hash>) and passes each to the #initialize_resource method
-  #   so that each resource can act independently of the collection. JSONAPI collection are wrapped in a McCracken::Collection
+  #   into multiple JSONAPI resource objects (data: <Hash>) and passes each to
+  #   the #initialize_resource method so that each resource can act independently
+  #   of the collection. JSONAPI collection are wrapped in a McCracken::Collection
   #   which will also contain metadata from the request
   #
   # @example Mapping an unregistered JSONAPI collection response
@@ -59,38 +60,32 @@ module McCracken
     # Moved top level keys to the collection
     # * errors: an array of error objects
     # * meta: a meta object that contains non-standard meta-information.
-    # * jsonapi: an object describing the server’s implementation
+    # * jsonapi: an object describing the server's implementation
     # * links: a links object related to the primary data.
     def collection
-      if errors?
-        raise Exception, "IMPLEMENT ERRORS JERK"
-      elsif collection?
-        # Make each item in :data its own document, stick included into that document
-        records = @body[:data].reduce([]) do |agg, resource|
-          json = { data: resource }
-          json[:included] = @body[:included] if @body[:included]
-          agg << json
-          agg
-        end
+      raise Exception, 'IMPLEMENT ERRORS JERK' if errors?
+      raise McCracken::Error, 'Use ResponseMapper#resource on single resource' unless collection?
 
-        Collection.new(records.map{ |datum| McCracken.factory(datum) },
-          meta:    @body[:meta],
-          jsonapi: @body[:jsonapi],
-          links:   @body[:links]
-        )
-      else
-        raise McCracken::Error, "Called #collection, but response was a single resource. Use ResponseMapper#resource"
+      # Make each item in :data its own document, stick included into that document
+      records = @body[:data].each_with_object([]) do |resource, agg|
+        json = { data: resource }
+        json[:included] = @body[:included] if @body[:included]
+        agg << json
       end
+
+      Collection.new(
+        records.map { |datum| McCracken.factory(datum) },
+        meta:    @body[:meta],
+        jsonapi: @body[:jsonapi],
+        links:   @body[:links]
+      )
     end
 
     def resource
-      if errors?
-        raise Exception, "IMPLEMENT ERRORS JERK"
-      elsif resource?
-        McCracken.factory(@body)
-      else
-        raise McCracken::Error, "Called #resource, but response was a collection of resources. Use ResponseMapper#collection"
-      end
+      raise Exception, 'IMPLEMENT ERRORS JERK' if errors?
+      raise McCracken::Error, 'Use ResponseMapper#collection on collections' unless resource?
+
+      McCracken.factory(@body)
     end
 
     def jsonapi_resources

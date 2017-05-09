@@ -13,7 +13,7 @@ require 'support/matchers/have_data'
 
 McCracken.configure url: 'http://api.example.com'
 
-Dir["spec/support/app/*"].each{ |f| load f }
+Dir['spec/support/app/*'].each { |f| load f }
 WebMock.disable_net_connect!
 
 RSpec.configure do |c|

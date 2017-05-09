@@ -4,10 +4,10 @@ RSpec.describe McCracken::KeyFormatter do
   let(:dashed_hash) do
     {
       :"top-level" => true,
-      :"more" => {
+      :more => {
         :"second-level" => true
       },
-      :"etc" => [
+      :etc => [
         {
           :"in-an-array" => true
         }
@@ -32,13 +32,13 @@ RSpec.describe McCracken::KeyFormatter do
   end
 
   describe '.externalize' do
-    it "dasherizes the keys" do
+    it 'dasherizes the keys' do
       formatter = McCracken::KeyFormatter.new(:dasherize)
       hash = formatter.externalize(underscored_hash)
       expect(hash).to eq dashed_hash
     end
 
-    it "camelizes the keys" do
+    it 'camelizes the keys' do
       formatter = McCracken::KeyFormatter.new(:camelize)
       hash = formatter.externalize(underscored_hash)
       expect(hash).to eq camemlized_hash
@@ -46,13 +46,13 @@ RSpec.describe McCracken::KeyFormatter do
   end
 
   describe '.internalize' do
-    it "underscores dasherized keys" do
+    it 'underscores dasherized keys' do
       formatter = McCracken::KeyFormatter.new(:dasherize)
       hash = formatter.internalize(dashed_hash)
       expect(hash).to eq underscored_hash
     end
 
-    it "underscores camelized keys" do
+    it 'underscores camelized keys' do
       formatter = McCracken::KeyFormatter.new(:camelize)
       hash = formatter.internalize(camemlized_hash)
       expect(hash).to eq underscored_hash

@@ -1,46 +1,49 @@
-class McCracken::KeyFormatter
-  # @param [Symbol] resource_key_format
-  def initialize(resource_key_format)
-    @format = resource_key_format
-  end
+module McCracken
+  # Manages the process of converting JSON Object keys to Document attribute symbols
+  class KeyFormatter
+    # @param [Symbol] resource_key_format
+    def initialize(resource_key_format)
+      @format = resource_key_format
+    end
 
-  # Converts underscored keys to `format`
-  def externalize(hash)
-    deep_transform_keys(hash) do |key|
-      if @format == :dasherize
-        dasherize(key)
-      elsif @format == :camelize
-        camelize(key)
-      else
-        raise UnrecognizedKeyFormatter, <<-ERR
-        No key formatter found for `#{@format}`.
+    # Converts underscored keys to `format`
+    def externalize(hash)
+      deep_transform_keys(hash) do |key|
+        if @format == :dasherize
+          dasherize(key)
+        elsif @format == :camelize
+          camelize(key)
+        else
+          raise UnrecognizedKeyFormatter, <<-ERR
+          No key formatter found for `#{@format}`.
 
-        Valid :key_format values are `:camelize` and `:underscore`.
-        You may also provide a hash of lambdas `{format:->(key){}, unformat:->(key){}}`
-        ERR
+          Valid :key_format values are `:camelize` and `:underscore`.
+          You may also provide a hash of lambdas `{format:->(key){}, unformat:->(key){}}`
+          ERR
+        end
       end
     end
-  end
 
-  # Converts keys formatted in `format` to underscore
-  def internalize(hash)
-    deep_transform_keys(hash) do |key|
-      if @format == :dasherize
-        undasherize(key)
-      elsif @format == :camelize
-        underscore(key)
-      else
-        raise UnrecognizedKeyFormatter, <<-ERR
-        No key formatter found for `#{@format}`.
+    # Converts keys formatted in `format` to underscore
+    def internalize(hash)
+      deep_transform_keys(hash) do |key|
+        if @format == :dasherize
+          undasherize(key)
+        elsif @format == :camelize
+          underscore(key)
+        else
+          raise UnrecognizedKeyFormatter, <<-ERR
+          No key formatter found for `#{@format}`.
 
-        Valid :key_format values are `:camelize` and `:underscore`.
-        You may also provide a hash of lambdas `{format:->(key){}, unformat:->(key){}}`
-        ERR
+          Valid :key_format values are `:camelize` and `:underscore`.
+          You may also provide a hash of lambdas `{format:->(key){}, unformat:->(key){}}`
+          ERR
+        end
       end
     end
-  end
 
-  private
+    private
+
     def deep_transform_keys(hash, &block)
       result = {}
       hash.each do |key, value|
@@ -62,8 +65,10 @@ class McCracken::KeyFormatter
 
     def camelize(key)
       string = key.to_s
-      string = string.sub(/^(?:(?=\b|[A-Z_])|\w)/) { |match| match.downcase }
-      string.gsub!(/(?:_|(\/))([a-z\d]*)/i) { "#{$1}#{$2.capitalize}" }
+      string = string.sub(/^(?:(?=\b|[A-Z_])|\w)/, &:downcase)
+      string.gsub!(%r{(?:_|(/))([a-z\d]*)}i) do
+        "#{Regexp.last_match(1)}#{Regexp.last_match(2).capitalize}"
+      end
       string.to_sym
     end
 
@@ -72,7 +77,7 @@ class McCracken::KeyFormatter
       word = camel_cased_word.to_s
       word.gsub!(/([A-Z\d]+)([A-Z][a-z])/, '\1_\2'.freeze)
       word.gsub!(/([a-z\d])([A-Z])/, '\1_\2'.freeze)
-      word.tr!("-".freeze, "_".freeze)
+      word.tr!('-'.freeze, '_'.freeze)
       word.downcase!
       word.to_sym
     end
@@ -84,4 +89,5 @@ class McCracken::KeyFormatter
     def dasherize(key)
       key.to_s.tr('_'.freeze, '-'.freeze).to_sym
     end
+  end
 end

@@ -28,6 +28,7 @@ class Object
   end
 end
 
+# Extensions to stdlib NilClass class
 class NilClass
   # +nil+ is not duplicable:
   #
@@ -38,6 +39,7 @@ class NilClass
   end
 end
 
+# Extensions to stdlib FalseClass class
 class FalseClass
   # +false+ is not duplicable:
   #
@@ -48,6 +50,7 @@ class FalseClass
   end
 end
 
+# Extensions to stdlib TrueClass class
 class TrueClass
   # +true+ is not duplicable:
   #
@@ -58,6 +61,7 @@ class TrueClass
   end
 end
 
+# Extensions to stdlib Symbol class
 class Symbol
   # Symbols are not duplicable:
   #
@@ -68,6 +72,7 @@ class Symbol
   end
 end
 
+# Extensions to stdlib Numeric class
 class Numeric
   # Numbers are not duplicable:
   #
@@ -78,7 +83,8 @@ class Numeric
   end
 end
 
-require "bigdecimal"
+require 'bigdecimal'
+# Extensions to BugDecimal class
 class BigDecimal
   # BigDecimals are duplicable:
   #
@@ -89,6 +95,7 @@ class BigDecimal
   end
 end
 
+# Extensions to stdlib Method class
 class Method
   # Methods are not duplicable:
   #

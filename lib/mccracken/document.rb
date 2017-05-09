@@ -1,6 +1,7 @@
 require 'core_ext/object/deep_dup'
 
 module McCracken
+  # An abstraction layer between the Resource and the JSON Object it represents
   class Document
     attr_accessor :id
     attr_reader :type
@@ -39,29 +40,23 @@ module McCracken
       @jsonapi_document[:included] || []
     end
 
-    def attributes
-      @attributes
-    end
+    attr_reader :attributes
 
     def attributes=(attrs)
       @attributes.merge!(attrs)
     end
 
     def changes
-      attributes.reduce({}) do |memo, (k,v)|
+      attributes.each_with_object({}) do |(k, _v), memo|
         if @original_attributes[k] != attributes[k]
           memo[k] = [@original_attributes[k], attributes[k]]
         end
-        memo
       end
     end
 
     def changed
-      attributes.reduce({}) do |memo, (k,v)|
-        if @original_attributes[k] != attributes[k]
-          memo[k] = attributes[k]
-        end
-        memo
+      attributes.each_with_object({}) do |(k, _v), memo|
+        memo[k] = attributes[k] if @original_attributes[k] != attributes[k]
       end
     end
 
@@ -72,10 +67,10 @@ module McCracken
 
     def save(agent)
       response = if id
-        agent.patch(id: id.to_s, body: payload)
-      else
-        agent.post(body: payload)
-      end
+                   agent.patch(id: id.to_s, body: payload)
+                 else
+                   agent.post(body: payload)
+                 end
 
       McCracken::Document.new(response.body)
     end
@@ -132,9 +127,7 @@ module McCracken
           included_resource[:id] == relationship[:id]
       end
 
-      if resource
-        Document.new(data: resource, included: included)
-      else
+      unless resource
         raise RelationshipNotIncludedError, <<-ERR
         The relationship `#{relationship[:type]}` was called,
         but it was not included in the request.
@@ -142,6 +135,7 @@ module McCracken
         Try adding `include=#{relationship[:type]}` to your query.
         ERR
       end
+      Document.new(data: resource, included: included)
     end
   end
 end

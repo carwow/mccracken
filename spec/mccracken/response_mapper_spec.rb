@@ -6,8 +6,8 @@ describe McCracken::ResponseMapper do
       json = response_json(:albums_include_artist)
       mapper = McCracken::ResponseMapper.new(json)
 
-      types = mapper.jsonapi_resources.map{ |r| r[:type] }.uniq
-      expect(types).to eq %w(albums artists)
+      types = mapper.jsonapi_resources.map { |r| r[:type] }.uniq
+      expect(types).to eq %w[albums artists]
     end
   end
 
@@ -16,14 +16,14 @@ describe McCracken::ResponseMapper do
       stub_api_request(:albums)
       document   = Album.mccracken.agent.get(path: '/albums').body
       collection = McCracken::ResponseMapper.new(document).collection
-      expect(collection.jsonapi[:version]).to eq "1.0"
+      expect(collection.jsonapi[:version]).to eq '1.0'
     end
 
     it 'sets top-level jsonapi "links" on the collection' do
       stub_api_request(:albums)
       document   = Album.mccracken.agent.get(path: '/albums').body
       collection = McCracken::ResponseMapper.new(document).collection
-      expect(collection.links[:self]).to eq "http://api.example.com/albums/"
+      expect(collection.links[:self]).to eq 'http://api.example.com/albums/'
     end
 
     it 'sets top-level jsonapi "meta" data on the collection' do
@@ -61,7 +61,7 @@ describe McCracken::ResponseMapper do
         resource = McCracken::ResponseMapper.new(response.body).resource
 
         expect(resource).to be_a(McCracken::Document)
-        expect(resource.id). to eq "1"
+        expect(resource.id). to eq '1'
         expect(resource.type).to eq :venues
       end
     end
@@ -74,7 +74,7 @@ describe McCracken::ResponseMapper do
 
       expect(mapper.collection).to be_a(McCracken::Collection)
       expect(first_resource).to be_a(McCracken::Document)
-      expect(first_resource.id).to eq "1"
+      expect(first_resource.id).to eq '1'
       expect(first_resource.type).to eq :venues
     end
   end

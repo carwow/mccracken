@@ -2,6 +2,7 @@ require 'core_ext/object/duplicable'
 
 # Taken from ActiveSupport
 
+# Extensions to core Object class
 class Object
   # Returns a deep copy of object if it's duplicable. If it's
   # not duplicable, returns +self+.
@@ -17,6 +18,7 @@ class Object
   end
 end
 
+# Extensions to stdlib Array class
 class Array
   # Returns a deep copy of array.
   #
@@ -31,6 +33,7 @@ class Array
   end
 end
 
+# Extensions to stdlib Hash class
 class Hash
   # Returns a deep copy of hash.
   #
@@ -43,6 +46,7 @@ class Hash
   def deep_dup
     hash = dup
     each_pair do |key, value|
+      # rubocop:disable Style/CaseEquality
       if key.frozen? && ::String === key
         hash[key] = value.deep_dup
       else

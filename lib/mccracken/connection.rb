@@ -8,8 +8,8 @@ module McCracken
     attr_reader :faraday, :options
 
     CONNECTION_OPTIONS = [:response_key_format].freeze
-    FARADAY_OPTIONS = [:request, :proxy, :ssl, :builder, :url,
-      :parallel_manager, :params, :headers, :builder_class].freeze
+    FARADAY_OPTIONS = %i[request proxy ssl builder url
+                         parallel_manager params headers builder_class].freeze
 
     # Create a new connection. A connection serves as a thin wrapper around a
     # a faraday connection that includes two pieces of middleware for handling
@@ -17,14 +17,17 @@ module McCracken
     #
     # @param [Hash] args {McCracken::Connection} configuration arguments
     # @param [Proc] block to yield to Faraday::Connection
-    # @see https://github.com/lostisland/faraday/blob/master/lib/faraday/connection.rb Faraday::Connection
+    # @see https://github.com/lostisland/faraday/blob/master/lib/faraday/connection.rb
+    #   Faraday::Connection
     #
     # @example Setting the key format
-    #   $my_connection = McCracken::Connection.new response_key_format: :dasherize, url: "http://api.example.com" do |c|
+    #   config = { response_key_format: :dasherize, url: "http://api.example.com" }
+    #   $my_connection = McCracken::Connection.new(config) do |c|
     #     c.use Your::Custom::Middleware
     #   end
     #
-    #   $my_connection = McCracken::Connection.new response_key_format: :camelize, url: "http://api.example.com" do |c|
+    #   config = { response_key_format: :camelize, url: "http://api.example.com" }
+    #   $my_connection = McCracken::Connection.new(config) do |c|
     #     c.use Your::Custom::Middleware
     #   end
     #
@@ -49,7 +52,9 @@ module McCracken
     # JSON API Spec GET request
     #
     # @example making a GET request
-    #   @connection.get(path: 'addresses', params: {include: 'user'}, headers: {'X-API-Token' => '2kewl'})
+    #   @connection.get(
+    #     path: 'addresses', params: {include: 'user'}, headers: {'X-API-Token' => '2kewl'}
+    #   )
     #
     # @option [Hash,nil] params: nil query params
     # @option [String] path: nil to GET
@@ -99,12 +104,12 @@ module McCracken
     #
     # @example Use a custom adapter
     #   McCracken::Connection.new adapter: [:rack, MyRackApp.new]
-    def configure(args={}, &block)
+    def configure(args = {}, &block)
       # Cache these for #clone method
       @options = args
       @block = block
 
-      faraday_options = @options.reject { |key, value| !FARADAY_OPTIONS.include?(key.to_sym) }
+      faraday_options = @options.select { |key, _value| FARADAY_OPTIONS.include?(key.to_sym) }
       @faraday = Faraday.new(faraday_options) do |conn|
         yield conn if block_given?
 
