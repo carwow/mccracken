@@ -3,7 +3,8 @@ module McCracken
   class Collection
     include Enumerable
     extend Forwardable
-    def_delegator :@collection, :last, :size
+    def_delegator :@collection, :last
+    def_delegators :@collection, :size
 
     attr_reader :meta
     attr_reader :jsonapi
