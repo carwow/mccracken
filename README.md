@@ -136,10 +136,25 @@ query.to_params
 query.fetch #=> McCracken::Collection<Product,Product>
 ```
 
+#### Fetching from a different URI
+```ruby
+Product.fetch_from('/top10') #=> performs a GET against /products/top10
+
+# The above code assumes the endpoint provides a collection of resources.
+# If your custom endpoint doesn't, just tell McCracken
+User.fetch_from('/me', collection: false)
+```
+
 #### Fetching a single resource
 
 ```ruby
 Product.find(1) #=> product
+```
+
+#### Deleting a resource
+```ruby
+no_longer_a_product = Product.find(2)
+no_longer_a_product.destroy
 ```
 
 ### Accessing McCracken internals
@@ -389,6 +404,14 @@ McCracken.register_type :songs, Song
 ```ruby
 album = Album.mccracken.include(:songs).find(9)
 album.songs #=> McCracken::Collection<Song>
+```
+
+### Pretending to be ActiveRecord
+
+McCracken provides a few handy (and optional) methods that can be added to `Resource` that allow it to be used in place of ActiveModel objects. If you're not sure why you'd want this, then this isn't something you probably need to worry about, but if you're using McCracken in a Rails app and want to do things like `resources :products` in `routes.rb` and then `redirect_to product_path(1)` in your controller (assuming `Product` is a `McCracken::Resource`) add this in an initializer:
+
+```ruby
+require 'mccracken/compat/active_record'
 ```
 
 ## Development
