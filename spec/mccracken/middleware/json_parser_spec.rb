@@ -1,19 +1,19 @@
 require 'spec_helper'
 
 describe McCracken::Middleware::JsonParser, type: :response do
-  let(:document){ response_body(:albums_include_artist) }
+  let(:document) { response_body(:albums_include_artist) }
 
-  let(:middleware) {
-    described_class.new(lambda {|env|
+  let(:middleware) do
+    described_class.new(lambda { |env|
       Faraday::Response.new(env)
     })
-  }
+  end
 
   def faraday_env(body)
     env = {
-      :body => body, :request => {},
-      :request_headers => Faraday::Utils::Headers.new({}),
-      :response_headers => Faraday::Utils::Headers.new({})
+      body: body, request: {},
+      request_headers: Faraday::Utils::Headers.new({}),
+      response_headers: Faraday::Utils::Headers.new({})
     }
     env[:response_headers]['content-type'] = 'application/vnd.api+json'
     env

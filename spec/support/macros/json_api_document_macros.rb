@@ -2,6 +2,7 @@ module McCracken
   module RSpec
     module Macros
       module JsonApiDocumentMacros
+        # rubocop:disable Lint/UnusedMethodArgument
         def create_payload(type, attribs, id: nil, relationships: nil)
           object = {
             type: type,

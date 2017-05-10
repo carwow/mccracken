@@ -5,53 +5,53 @@ class FooResource < McCracken::Resource
 end
 
 describe McCracken::Resource do
-  before {
-    FooResource.instance_variable_set("@schema",{})
-  }
+  before do
+    FooResource.instance_variable_set('@schema', {})
+  end
 
   describe '.format_id' do
-    it "defaults to :integer" do
-      expect(FooResource.format_id("3")).to eq 3
+    it 'defaults to :integer' do
+      expect(FooResource.format_id('3')).to eq 3
     end
 
-    context "when key_type is :string" do
-      after{ FooResource.key_type :integer }
-      it "returns a string" do
+    context 'when key_type is :string' do
+      after { FooResource.key_type :integer }
+      it 'returns a string' do
         FooResource.key_type(:string)
-        expect(FooResource.format_id("3")).to eq "3"
+        expect(FooResource.format_id('3')).to eq '3'
       end
     end
 
-    context "when key_type is a Proc" do
-      after{ FooResource.key_type :integer }
-      it "applies the proc" do
-        FooResource.key_type ->(val){ "#{val}-extra-cool" }
-        expect(FooResource.format_id("3")).to eq "3-extra-cool"
+    context 'when key_type is a Proc' do
+      after { FooResource.key_type :integer }
+      it 'applies the proc' do
+        FooResource.key_type ->(val) { "#{val}-extra-cool" }
+        expect(FooResource.format_id('3')).to eq '3-extra-cool'
       end
     end
   end
 
   describe '.attribute' do
     it "adds the attribute to the Resource's schema" do
-      expect { FooResource.attribute :name, :to_s }.
-        to change{FooResource.schema.empty?}.
-        from(true).to(false)
+      expect { FooResource.attribute :name, :to_s }
+        .to change { FooResource.schema.empty? }
+        .from(true).to(false)
     end
 
     context 'when initializing an object' do
       context 'when the default is set' do
         it 'sets the default for a given attribute' do
-          FooResource.attribute :color, :to_s, default: "red"
+          FooResource.attribute :color, :to_s, default: 'red'
           resource = FooResource.new
-          expect(resource.color).to eq "red"
+          expect(resource.color).to eq 'red'
         end
       end
 
       context 'when the default is set via a proc' do
         it 'sets the default for a given attribute' do
-          FooResource.attribute :color, :to_s, default: -> { "red" }
+          FooResource.attribute :color, :to_s, default: -> { 'red' }
           resource = FooResource.new
-          expect(resource.color).to eq "red"
+          expect(resource.color).to eq 'red'
         end
       end
     end
@@ -63,17 +63,17 @@ describe McCracken::Resource do
     end
 
     context 'when it has an ID' do
-      it "PATCHes the resource" do
+      it 'PATCHes the resource' do
         stub_api_request(:artist_9)
 
         artist = Artist.find(9)
-        artist.name = "Elton John"
-        artist.twitter = "@TheJohn"
+        artist.name = 'Elton John'
+        artist.twitter = '@TheJohn'
 
         json = {
           data: {
             type: :artists,
-            id: "9",
+            id: '9',
             attributes: {
               name: 'Elton John',
               twitter: '@TheJohn'
@@ -81,9 +81,9 @@ describe McCracken::Resource do
           }
         }
 
-        stub = stub_request(:patch, "http://api.example.com/artists/9").
-          with(body: JSON.dump(json)).
-          to_return(status: 200, body: JSON.dump(json))
+        stub = stub_request(:patch, 'http://api.example.com/artists/9')
+               .with(body: JSON.dump(json))
+               .to_return(status: 200, body: JSON.dump(json))
 
         expect(artist.save).to be true
         expect(stub).to have_been_requested
@@ -91,11 +91,9 @@ describe McCracken::Resource do
     end
 
     context 'when it does not have an ID' do
-      it "POSTs the resource" do
-        artist = Artist.new({
-          name: "Elton John",
-          twitter: "@TheJohn"
-        })
+      it 'POSTs the resource' do
+        artist = Artist.new(name: 'Elton John',
+                            twitter: '@TheJohn')
 
         post_body = {
           data: {
@@ -118,9 +116,9 @@ describe McCracken::Resource do
           }
         }
 
-        stub = stub_request(:post, "http://api.example.com/artists").
-          with(body: JSON.dump(post_body)).
-          to_return(status: 200, body: JSON.dump(response_body))
+        stub = stub_request(:post, 'http://api.example.com/artists')
+               .with(body: JSON.dump(post_body))
+               .to_return(status: 200, body: JSON.dump(response_body))
 
         expect(artist.save).to be true
         expect(stub).to have_been_requested
@@ -150,46 +148,46 @@ describe McCracken::Resource do
     before { Artist.type = :artists }
     after { Artist.type = :artists }
     it 'registers the type w/ McCracken' do
-      expect{ Artist.type =  "pickles" }.
-        to change{ McCracken.lookup_type(:pickles) }.from(nil).to(Artist)
+      expect { Artist.type = 'pickles' }
+        .to change { McCracken.lookup_type(:pickles) }.from(nil).to(Artist)
     end
 
     it 'sets the agents type' do
-      expect{ Artist.type = :bands }.
-        to change{ Artist.mccracken.type }.from(:artists).to(:bands)
+      expect { Artist.type = :bands }
+        .to change { Artist.mccracken.type }.from(:artists).to(:bands)
     end
   end
 
   describe 'relationships' do
     context 'when the type is a McCracken::Resource' do
-      it "returns a McCracken::Collection of McCracken::Resource" do
+      it 'returns a McCracken::Collection of McCracken::Resource' do
         stub_api_request(:artist_9_include_members)
         artist = Artist.include('members').find(9)
 
         expect(artist.members).to be_a(McCracken::Collection)
         expect(artist.members.first).to be_a(Member)
-        expect(artist.members.first.name).to eq "Colin Meloy"
+        expect(artist.members.first.name).to eq 'Colin Meloy'
       end
     end
 
     context 'when the type is registered, but not a McCracken::Resource' do
-      it "returns a McCracken::Collection of objects" do
+      it 'returns a McCracken::Collection of objects' do
         stub_api_request(:artist_9_include_albums)
         artist = Artist.include('albums').find(9)
 
         expect(artist.albums).to be_a(McCracken::Collection)
         expect(artist.albums.first).to be_a(Album)
-        expect(artist.albums.first.title).to eq "The Crane Wife"
+        expect(artist.albums.first.title).to eq 'The Crane Wife'
       end
     end
 
     context 'when the type is not registered' do
-      it "returns a McCracken::Document" do
+      it 'returns a McCracken::Document' do
         stub_api_request(:artist_9_include_albums_record_label)
-        artist = Artist.include(:albums,:record_label).find(9)
+        artist = Artist.include(:albums, :record_label).find(9)
 
         expect(artist.record_label).to be_a(McCracken::Document)
-        expect(artist.record_label[:name]).to eq "Capitol Records"
+        expect(artist.record_label[:name]).to eq 'Capitol Records'
       end
     end
   end
@@ -211,28 +209,28 @@ describe McCracken::Resource do
   end
 
   describe '.fields' do
-    it "returns a Query" do
-      query = Artist.fields(artists: [:name, :twitter], albums: [:name])
+    it 'returns a Query' do
+      query = Artist.fields(artists: %i[name twitter], albums: [:name])
       fields = query.to_params[:fields]
 
-      expect(fields).to eq(artists: "name,twitter", albums: "name")
+      expect(fields).to eq(artists: 'name,twitter', albums: 'name')
     end
 
-    context "given an array and a hash" do
-      it "automatically wraps the array elements with the type name" do
+    context 'given an array and a hash' do
+      it 'automatically wraps the array elements with the type name' do
         query = Artist.fields(:name, :twitter, albums: [:name])
         fields = query.to_params[:fields]
 
-        expect(fields).to eq(artists: "name,twitter", albums: "name")
+        expect(fields).to eq(artists: 'name,twitter', albums: 'name')
       end
     end
 
-    context "given an array" do
-      it "automatically wraps the array elements with the type name" do
+    context 'given an array' do
+      it 'automatically wraps the array elements with the type name' do
         query = Artist.fields(:name, :twitter)
         fields = query.to_params[:fields]
 
-        expect(fields).to eq(artists: "name,twitter")
+        expect(fields).to eq(artists: 'name,twitter')
       end
     end
   end
@@ -266,11 +264,11 @@ describe McCracken::Resource do
   end
 
   describe '.update' do
-    pending "Resource.update(id,{})"
+    pending 'Resource.update(id,{})'
   end
 
   describe '.destroy' do
-    pending "Resource.destroy(id)"
+    pending 'Resource.destroy(id)'
   end
 
   describe '#destroy' do
@@ -279,8 +277,8 @@ describe McCracken::Resource do
 
       artist = Artist.find(9)
 
-      stub = stub_request(:delete, "http://api.example.com/artists/9").
-        to_return(status: 204)
+      stub = stub_request(:delete, 'http://api.example.com/artists/9')
+             .to_return(status: 204)
 
       expect(artist.destroy).to be true
       expect(stub).to have_been_requested
@@ -288,6 +286,6 @@ describe McCracken::Resource do
   end
 
   describe '.all' do
-    pending "Resource.all{ |article| paging...}"
+    pending 'Resource.all{ |article| paging...}'
   end
 end

@@ -1,5 +1,6 @@
 module McCracken
   module Middleware
+    # A Faraday Middleware for performing {json:api} operations
     class EncodeJsonApi < Faraday::Middleware
       CONTENT_TYPE = 'Content-Type'.freeze
       ACCEPT       = 'Accept'.freeze
@@ -26,19 +27,19 @@ module McCracken
       end
 
       def match_content_type(env)
-        if process_request?(env)
-          env[:request_headers][CONTENT_TYPE] ||= MIME_TYPE
-          yield env[:body] unless env[:body].respond_to?(:to_str)
-        end
+        return nil unless process_request?(env)
+        env[:request_headers][CONTENT_TYPE] ||= MIME_TYPE
+        yield env[:body] unless env[:body].respond_to?(:to_str)
       end
 
       def process_request?(env)
         type = request_type(env)
-        has_body?(env) and (type.empty? or type == MIME_TYPE)
+        has_body?(env) && (type.empty? || type == MIME_TYPE)
       end
 
+      # rubocop:disable Style/PredicateName
       def has_body?(env)
-        body = env[:body] and !(body.respond_to?(:to_str) and body.empty?)
+        (body = env[:body]) && !(body.respond_to?(:to_str) && body.empty?)
       end
 
       def request_type(env)
@@ -50,4 +51,6 @@ module McCracken
   end
 end
 
-Faraday::Request.register_middleware :"McCracken::Middleware::EncodeJsonApi" => McCracken::Middleware::EncodeJsonApi
+Faraday::Request.register_middleware(
+  :"McCracken::Middleware::EncodeJsonApi" => McCracken::Middleware::EncodeJsonApi
+)

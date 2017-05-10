@@ -1,11 +1,14 @@
 # McCracken
 
 [![Gem Version](https://badge.fury.io/rb/mccracken.svg)](https://badge.fury.io/rb/mccracken)
-[![Code Climate](https://codeclimate.com/github/jgnagy/mccracken/badges/gpa.svg)](https://codeclimate.com/github/jgnagy/mccracken)
-[![Test Coverage](https://codeclimate.com/github/jgnagy/mccracken/badges/coverage.svg)](https://codeclimate.com/github/jgnagy/mccracken/coverage)
+[![Coverage Status](https://coveralls.io/repos/github/jgnagy/mccracken/badge.svg)](https://coveralls.io/github/jgnagy/mccracken)
 [![Build Status](https://travis-ci.org/jgnagy/mccracken.svg?branch=develop)](https://travis-ci.org/jgnagy/mccracken)
 
-A JSON API client for Ruby
+A JSON API client for Ruby.
+
+Why is it called `mccracken`, you ask? Well, it's forked from a library called [munson](https://github.com/coryodaniel/munson), which is a fairly odd name for a Ruby library. This library's author guessed it had something to do with the movie [Kingpin](http://www.imdb.com/title/tt0116778/), which stars [Woody Harrelson](http://www.imdb.com/name/nm0000437/) as [Roy Munson](http://www.imdb.com/character/ch0012623/). Given that, why not use [Bill Murray](http://www.imdb.com/name/nm0000195/)'s character of [Ernie "Big Ern" McCracken](http://www.imdb.com/character/ch0012622/)? Sure, McCracken was the villain, but he was good at what he did and knew exactly who he was.
+
+_You're on a gravy train with biscuit wheels._ -- Ernie McCracken
 
 ## Installation
 
@@ -133,10 +136,25 @@ query.to_params
 query.fetch #=> McCracken::Collection<Product,Product>
 ```
 
+#### Fetching from a different URI
+```ruby
+Product.fetch_from('/top10') #=> performs a GET against /products/top10
+
+# The above code assumes the endpoint provides a collection of resources.
+# If your custom endpoint doesn't, just tell McCracken
+User.fetch_from('/me', collection: false)
+```
+
 #### Fetching a single resource
 
 ```ruby
 Product.find(1) #=> product
+```
+
+#### Deleting a resource
+```ruby
+no_longer_a_product = Product.find(2)
+no_longer_a_product.destroy
 ```
 
 ### Accessing McCracken internals
@@ -386,6 +404,14 @@ McCracken.register_type :songs, Song
 ```ruby
 album = Album.mccracken.include(:songs).find(9)
 album.songs #=> McCracken::Collection<Song>
+```
+
+### Pretending to be ActiveRecord
+
+McCracken provides a few handy (and optional) methods that can be added to `Resource` that allow it to be used in place of ActiveModel objects. If you're not sure why you'd want this, then this isn't something you probably need to worry about, but if you're using McCracken in a Rails app and want to do things like `resources :products` in `routes.rb` and then `redirect_to product_path(1)` in your controller (assuming `Product` is a `McCracken::Resource`) add this in an initializer:
+
+```ruby
+require 'mccracken/compat/active_record'
 ```
 
 ## Development

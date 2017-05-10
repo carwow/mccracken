@@ -4,27 +4,28 @@ require 'faraday'
 require 'faraday_middleware'
 require 'bigdecimal'
 
-require "mccracken/version"
+require 'mccracken/version'
 require 'mccracken/agent'
 require 'mccracken/attribute'
-require "mccracken/client"
+require 'mccracken/client'
 require 'mccracken/collection'
 require 'mccracken/connection'
 require 'mccracken/document'
 require 'mccracken/key_formatter'
-require "mccracken/middleware/encode_json_api"
-require "mccracken/middleware/json_parser"
+require 'mccracken/middleware/encode_json_api'
+require 'mccracken/middleware/json_parser'
 require 'mccracken/resource'
 require 'mccracken/response_mapper'
 require 'mccracken/query'
 
+# The McCracked {json:api} client library
 module McCracken
-  class Error < StandardError; end;
-  class UnsupportedSortDirectionError < McCracken::Error; end;
-  class UnrecognizedKeyFormatter < McCracken::Error; end;
-  class RelationshipNotIncludedError < McCracken::Error; end;
-  class RelationshipNotFound < McCracken::Error; end;
-  class ClientNotSet < McCracken::Error; end;
+  class Error < StandardError; end
+  class UnsupportedSortDirectionError < McCracken::Error; end
+  class UnrecognizedKeyFormatter < McCracken::Error; end
+  class RelationshipNotIncludedError < McCracken::Error; end
+  class RelationshipNotFound < McCracken::Error; end
+  class ClientNotSet < McCracken::Error; end
   @registered_types = {}
 
   class << self
@@ -48,9 +49,10 @@ module McCracken
     # @param [Proc] block to yield to Faraday::Connection
     # @return [McCracken::Connection] the default connection
 
-    # @see https://github.com/lostisland/faraday/blob/master/lib/faraday/connection.rb Faraday::Connection
+    # @see https://github.com/lostisland/faraday/blob/master/lib/faraday/connection.rb
+    #   Faraday::Connection
     # @see McCracken::Connection
-    def configure(opts={}, &block)
+    def configure(opts = {}, &block)
       @default_connection = McCracken::Connection.new(opts, &block)
     end
 

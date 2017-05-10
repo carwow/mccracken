@@ -1,10 +1,11 @@
 module McCracken
+  # The work of converting from JSON data to Document attributes is done here
   class Attribute
     attr_reader :name
     attr_reader :cast_type
     attr_reader :options
 
-    def initialize(name, cast_type, options={})
+    def initialize(name, cast_type, options = {})
       options[:default] ||= nil
       options[:array]   ||= false
       @name      = name
@@ -20,11 +21,14 @@ module McCracken
     # Super naive casting!
     def cast(value)
       return (@options[:array] ? [] : nil) if value.nil?
-      value.is_a?(Array) ?
-        value.map { |v| cast_value(v) } :
+      if value.is_a?(Array)
+        value.map { |v| cast_value(v) }
+      else
         cast_value(value)
+      end
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def cast_value(value)
       return nil if value.nil?
 
@@ -33,21 +37,28 @@ module McCracken
         cast_type.call(value)
       when :string, :to_s, String
         value.to_s
-      when :integer, :to_i, Fixnum
+      when :integer, :to_i, Integer
         value.to_i
       when :bigdecimal
         BigDecimal.new(value.to_s)
       when :float, :to_f, Float
         value.to_f
       when :date, Date
-        Date.parse(value) rescue nil
+        begin
+          Date.parse(value)
+        rescue
+          nil
+        end
       when :time, Time
-        Time.parse(value) rescue nil
+        begin
+          Time.parse(value)
+        rescue
+          nil
+        end
       else
         value
       end
     end
-
 
     # Serializes the value back to JSON datatype
     #

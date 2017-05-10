@@ -1,6 +1,15 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'simplecov'
-SimpleCov.start
+require 'coveralls'
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+  SimpleCov::Formatter::HTMLFormatter,
+  Coveralls::SimpleCov::Formatter
+]
+SimpleCov.start do
+  add_filter '/spec/'
+  add_filter '/.bundle/'
+end
+
 require 'webmock/rspec'
 require 'pry-byebug' unless defined?(JRUBY_VERSION)
 
@@ -13,7 +22,7 @@ require 'support/matchers/have_data'
 
 McCracken.configure url: 'http://api.example.com'
 
-Dir["spec/support/app/*"].each{ |f| load f }
+Dir['spec/support/app/*'].each { |f| load f }
 WebMock.disable_net_connect!
 
 RSpec.configure do |c|

@@ -27,7 +27,7 @@ RSpec.describe 'Usage' do
 
     articles = Article.include(:author, :comments).fetch
     comment = articles.first.comments.first
-    expect(comment.mentions).to eq %w(paulbunyan)
+    expect(comment.mentions).to eq %w[paulbunyan]
 
     last_comment = articles.first.comments.last
     expect(last_comment.mentions).to eq []
@@ -38,10 +38,10 @@ RSpec.describe 'Usage' do
 
     articles = Article.include(:author, :comments).fetch
     author = articles.first.author
-    author.first_name = "Tomas"
-    author.last_name = "Blunderbee"
-    author.twitter = "blunderz"
-    author.meta['spam-score'] = "0"
+    author.first_name = 'Tomas'
+    author.last_name = 'Blunderbee'
+    author.twitter = 'blunderz'
+    author.meta['spam-score'] = '0'
     expect(author.first_name).to eq 'Tomas'
 
     json = {
@@ -49,25 +49,26 @@ RSpec.describe 'Usage' do
         type: :people,
         id: author.id.to_s,
         attributes: {
-          "first-name" => "Tomas",
-          "last-name" => "Blunderbee",
-          "twitter" => "blunderz",
-          "meta" => {
-            "last-ip" => "127.0.0.1",
-            "spam-score" => "0"
+          'first-name' => 'Tomas',
+          'last-name' => 'Blunderbee',
+          'twitter' => 'blunderz',
+          'meta' => {
+            'last-ip' => '127.0.0.1',
+            'spam-score' => '0'
           }
         }
       }
     }
 
-    stub = stub_request(:patch, "http://api.example.com/people/#{author.id}").
-      with(body: JSON.dump(json)).
-      to_return(status: 200, body: JSON.dump(json))
+    # rubocop:disable Lint/UselessAssignment
+    stub = stub_request(:patch, "http://api.example.com/people/#{author.id}")
+           .with(body: JSON.dump(json))
+           .to_return(status: 200, body: JSON.dump(json))
 
     expect(author.save).to be true
   end
 
-  it "can load unloaded relationships" do
+  it 'can load unloaded relationships' do
     pending
     stub_api_request(:articles_include_author_comments)
 
@@ -84,7 +85,7 @@ RSpec.describe 'Usage' do
     articles = Article.include(:author, :comments).fetch
     article = articles.first
 
-    comment = article.comments(true).first #should force reload of comments
+    comment = article.comments(true).first # should force reload of comments
   end
 
   describe 'Artist (McCracken::Resource)' do
@@ -104,14 +105,14 @@ RSpec.describe 'Usage' do
 
     it 'loads unregistered JSONAPI resources' do
       stub_api_request(:artist_9_include_albums_record_label)
-      artist = Artist.include(:albums,:record_label).find(9)
+      artist = Artist.include(:albums, :record_label).find(9)
       expect(artist.record_label).to be_a(McCracken::Document)
-      expect(artist.record_label[:name]).to eq "Capitol Records"
+      expect(artist.record_label[:name]).to eq 'Capitol Records'
     end
   end
 
   describe 'Album (non-resource)' do
-    it "initializes a McCracken::Collectin of albums" do
+    it 'initializes a McCracken::Collectin of albums' do
       stub_api_request(:albums)
 
       albums = Album.mccracken.fetch
@@ -119,19 +120,19 @@ RSpec.describe 'Usage' do
 
       expect(albums).to be_a(McCracken::Collection)
       expect(first_album).to be_a(Album)
-      expect(first_album.title).to eq "The Crane Wife"
+      expect(first_album.title).to eq 'The Crane Wife'
     end
 
-    it "finds records by ID" do
+    it 'finds records by ID' do
       stub_api_request(:album_1_include_artist)
       album = Album.mccracken.include(:artist).find(1)
       expect(album).to be_a(Album)
-      expect(album.title).to eq "The Crane Wife"
+      expect(album.title).to eq 'The Crane Wife'
     end
   end
 
   describe 'Venues (unregistered, non-resource)' do
-    it "returns McCracken::Documents if the class is unregistered" do
+    it 'returns McCracken::Documents if the class is unregistered' do
       stub_api_request(:venues)
       venues = Venue.mccracken.fetch
       expect(venues).to be_a(McCracken::Collection)
