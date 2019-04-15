@@ -6,7 +6,7 @@
 
 A JSON API client for Ruby.
 
-Why is it called `mccracken`, you ask? Well, it's forked from a library called [munson](https://github.com/coryodaniel/munson), which is a fairly odd name for a Ruby library. This library's author guessed it had something to do with the movie [Kingpin](http://www.imdb.com/title/tt0116778/), which stars [Woody Harrelson](http://www.imdb.com/name/nm0000437/) as [Roy Munson](http://www.imdb.com/character/ch0012623/). Given that, why not use [Bill Murray](http://www.imdb.com/name/nm0000195/)'s character of [Ernie "Big Ern" McCracken](http://www.imdb.com/character/ch0012622/)? Sure, McCracken was the villain, but he was good at what he did and knew exactly who he was.
+Why is it called `mccracken`, you ask? Well, it's forked from a library called [munson](https://github.com/coryodaniel/munson), which is a fairly odd name for a Ruby library. This library's author guessed it had something to do with the movie [Kingpin](http://www.imdb.com/title/tt0116778/), which stars [Woody Harrelson](http://www.imdb.com/name/nm0000437/) as [Roy Munson](http://www.imdb.com/title/tt0116778/characters/nm0000437). Given that, why not use [Bill Murray](http://www.imdb.com/name/nm0000195/)'s character of [Ernie "Big Ern" McCracken](http://www.imdb.com/title/tt0116778/characters/nm0000195)? Sure, McCracken was the villain, but he was good at what he did and knew exactly who he was.
 
 _You're on a gravy train with biscuit wheels._ -- Ernie McCracken
 
