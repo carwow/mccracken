@@ -5,7 +5,6 @@ class Article < McCracken::Resource
   has_one :author
   has_many :comments
 
-  key_type :integer
   attribute :title, :string
 end
 

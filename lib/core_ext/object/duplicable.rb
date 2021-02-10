@@ -83,7 +83,7 @@ class Numeric
   end
 end
 
-require 'bigdecimal'
+require "bigdecimal"
 # Extensions to BugDecimal class
 class BigDecimal
   # BigDecimals are duplicable:

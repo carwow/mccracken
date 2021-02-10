@@ -6,7 +6,7 @@ module McCracken
     end
 
     def self.i18n_key
-      name.split('::').last.underscore
+      name.split("::").last.underscore
     end
 
     def self.param_key
@@ -18,7 +18,7 @@ module McCracken
     end
 
     def self.singular_route_key
-      name.split('::').last.underscore
+      name.split("::").last.underscore
     end
 
     def model_name

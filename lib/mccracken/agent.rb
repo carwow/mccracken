@@ -6,7 +6,7 @@ module McCracken
     # @param [#to_s] path to JSON API Resource. Will be added to the Faraday::Connection base path
     # @param [McCracken::Connection] connection to use
     def initialize(path, connection: nil)
-      @path       = path
+      @path = path
       @connection = connection
     end
 
@@ -38,7 +38,7 @@ module McCracken
       if path
         path
       elsif id
-        [@path, id].join('/')
+        [@path, id].join("/")
       else
         @path
       end

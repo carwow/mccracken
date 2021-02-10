@@ -15,23 +15,22 @@ module McCracken
     # @param [Hash,McCracken::Document] attrs
     def initialize(attrs = {})
       @document = if attrs.is_a?(McCracken::Document)
-                    attrs
-                  else
-                    McCracken::Document.new(
-                      data: {
-                        type: self.class.type,
-                        id: attrs.delete(:id),
-                        attributes: attrs
-                      }
-                    )
-                  end
+        attrs
+      else
+        McCracken::Document.new(
+          data: {
+            type: self.class.type,
+            id: attrs.delete(:id),
+            attributes: attrs
+          }
+        )
+      end
 
       initialize_attrs
     end
 
     def id
-      return nil if document.id.nil?
-      @id ||= self.class.format_id(document.id)
+      document.id
     end
 
     def initialize_attrs
@@ -93,22 +92,6 @@ module McCracken
         subclass.type = subclass.to_s.tableize.to_sym if subclass.to_s.respond_to?(:tableize)
       end
 
-      # rubocop:disable Style/TrivialAccessors
-      def key_type(type)
-        @key_type = type
-      end
-
-      def format_id(id)
-        case @key_type
-        when :integer, nil
-          id.to_i
-        when :string
-          id.to_s
-        when Proc
-          @key_type.call(id)
-        end
-      end
-
       def schema
         @schema ||= {}
       end
@@ -130,7 +113,6 @@ module McCracken
         RUBY
       end
 
-      # rubocop:disable Style/PredicateName
       def has_one(relation_name)
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
           def #{relation_name}

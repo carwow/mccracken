@@ -1,7 +1,7 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
-RSpec.describe 'Usage' do
-  it 'initialize side loaded resources' do
+RSpec.describe "Usage" do
+  it "initialize side loaded resources" do
     stub_api_request(:articles_include_author_comments)
 
     articles = Article.include(:author, :comments).fetch
@@ -15,14 +15,14 @@ RSpec.describe 'Usage' do
     expect(comment.author).to eq(author) # this was loaded, because it HAPPENED to be the article author
   end
 
-  it 'knows if a resource has been persisted' do
+  it "knows if a resource has been persisted" do
     stub_api_request(:articles_include_author_comments)
 
     articles = Article.include(:author, :comments).fetch
     expect(articles.first).to be_persisted
   end
 
-  it 'casts attribute values from JSON' do
+  it "casts attribute values from JSON" do
     stub_api_request(:articles_include_author_comments)
 
     articles = Article.include(:author, :comments).fetch
@@ -33,42 +33,41 @@ RSpec.describe 'Usage' do
     expect(last_comment.mentions).to eq []
   end
 
-  it 'can update resources' do
+  it "can update resources" do
     stub_api_request(:articles_include_author_comments)
 
     articles = Article.include(:author, :comments).fetch
     author = articles.first.author
-    author.first_name = 'Tomas'
-    author.last_name = 'Blunderbee'
-    author.twitter = 'blunderz'
-    author.meta['spam-score'] = '0'
-    expect(author.first_name).to eq 'Tomas'
+    author.first_name = "Tomas"
+    author.last_name = "Blunderbee"
+    author.twitter = "blunderz"
+    author.meta["spam-score"] = "0"
+    expect(author.first_name).to eq "Tomas"
 
     json = {
       data: {
         type: :people,
         id: author.id.to_s,
         attributes: {
-          'first-name' => 'Tomas',
-          'last-name' => 'Blunderbee',
-          'twitter' => 'blunderz',
-          'meta' => {
-            'last-ip' => '127.0.0.1',
-            'spam-score' => '0'
+          "first-name" => "Tomas",
+          "last-name" => "Blunderbee",
+          "twitter" => "blunderz",
+          "meta" => {
+            "last-ip" => "127.0.0.1",
+            "spam-score" => "0"
           }
         }
       }
     }
 
-    # rubocop:disable Lint/UselessAssignment
-    stub = stub_request(:patch, "http://api.example.com/people/#{author.id}")
-           .with(body: JSON.dump(json))
-           .to_return(status: 200, body: JSON.dump(json))
+    stub_request(:patch, "http://api.example.com/people/#{author.id}")
+      .with(body: JSON.dump(json))
+      .to_return(status: 200, body: JSON.dump(json))
 
     expect(author.save).to be true
   end
 
-  it 'can load unloaded relationships' do
+  it "can load unloaded relationships" do
     pending
     stub_api_request(:articles_include_author_comments)
 
@@ -78,18 +77,18 @@ RSpec.describe 'Usage' do
     expect(last_comment.author) # This wasn't loaded... shouldn't explode
   end
 
-  it 'can force a reload of a relationship' do
+  it "can force a reload of a relationship" do
     pending
     stub_api_request(:articles_include_author_comments)
 
     articles = Article.include(:author, :comments).fetch
     article = articles.first
 
-    comment = article.comments(true).first # should force reload of comments
+    article.comments(true).first # should force reload of comments
   end
 
-  describe 'Artist (McCracken::Resource)' do
-    it 'loads other mccracken resources' do
+  describe "Artist (McCracken::Resource)" do
+    it "loads other mccracken resources" do
       stub_api_request(:artist_9_include_albums)
 
       artist = Artist.include(:albums).find(9)
@@ -97,22 +96,22 @@ RSpec.describe 'Usage' do
       expect(artist.albums.first).to be_a(Album)
     end
 
-    it 'loads other registered resources' do
+    it "loads other registered resources" do
       stub_api_request(:artists)
       artists = Artist.fetch
       expect(artists).to be_a(McCracken::Collection)
     end
 
-    it 'loads unregistered JSONAPI resources' do
+    it "loads unregistered JSONAPI resources" do
       stub_api_request(:artist_9_include_albums_record_label)
       artist = Artist.include(:albums, :record_label).find(9)
       expect(artist.record_label).to be_a(McCracken::Document)
-      expect(artist.record_label[:name]).to eq 'Capitol Records'
+      expect(artist.record_label[:name]).to eq "Capitol Records"
     end
   end
 
-  describe 'Album (non-resource)' do
-    it 'initializes a McCracken::Collectin of albums' do
+  describe "Album (non-resource)" do
+    it "initializes a McCracken::Collectin of albums" do
       stub_api_request(:albums)
 
       albums = Album.mccracken.fetch
@@ -120,19 +119,19 @@ RSpec.describe 'Usage' do
 
       expect(albums).to be_a(McCracken::Collection)
       expect(first_album).to be_a(Album)
-      expect(first_album.title).to eq 'The Crane Wife'
+      expect(first_album.title).to eq "The Crane Wife"
     end
 
-    it 'finds records by ID' do
+    it "finds records by ID" do
       stub_api_request(:album_1_include_artist)
       album = Album.mccracken.include(:artist).find(1)
       expect(album).to be_a(Album)
-      expect(album.title).to eq 'The Crane Wife'
+      expect(album.title).to eq "The Crane Wife"
     end
   end
 
-  describe 'Venues (unregistered, non-resource)' do
-    it 'returns McCracken::Documents if the class is unregistered' do
+  describe "Venues (unregistered, non-resource)" do
+    it "returns McCracken::Documents if the class is unregistered" do
       stub_api_request(:venues)
       venues = Venue.mccracken.fetch
       expect(venues).to be_a(McCracken::Collection)

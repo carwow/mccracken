@@ -73,21 +73,21 @@ module McCracken
     end
 
     def underscore(camel_cased_word)
-      return camel_cased_word unless camel_cased_word =~ /[A-Z-]|::/
+      return camel_cased_word unless /[A-Z-]|::/.match?(camel_cased_word)
       word = camel_cased_word.to_s
       word.gsub!(/([A-Z\d]+)([A-Z][a-z])/, '\1_\2'.freeze)
       word.gsub!(/([a-z\d])([A-Z])/, '\1_\2'.freeze)
-      word.tr!('-'.freeze, '_'.freeze)
+      word.tr!("-".freeze, "_".freeze)
       word.downcase!
       word.to_sym
     end
 
     def undasherize(key)
-      key.to_s.tr('-'.freeze, '_'.freeze).to_sym
+      key.to_s.tr("-".freeze, "_".freeze).to_sym
     end
 
     def dasherize(key)
-      key.to_s.tr('_'.freeze, '-'.freeze).to_sym
+      key.to_s.tr("_".freeze, "-".freeze).to_sym
     end
   end
 end

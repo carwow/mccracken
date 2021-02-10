@@ -2,14 +2,13 @@ module McCracken
   module RSpec
     module Macros
       module JsonApiDocumentMacros
-        # rubocop:disable Lint/UnusedMethodArgument
         def create_payload(type, attribs, id: nil, relationships: nil)
           object = {
             type: type,
             attributes: attribs
           }
           object[:id] = id if id
-          { data: object }
+          {data: object}
         end
 
         def response_body(name)

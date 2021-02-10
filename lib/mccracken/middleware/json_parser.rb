@@ -7,8 +7,6 @@ module McCracken
         @key_formatter = key_formatter
       end
 
-      # TODO: fix this weirdness
-      # rubocop:disable Lint/ShadowingOuterLocalVariable
       def call(request_env)
         @app.call(request_env).on_complete do |request_env|
           request_env[:body] = parse(request_env[:body])
@@ -28,7 +26,3 @@ module McCracken
     end
   end
 end
-
-Faraday::Response.register_middleware(
-  :"McCracken::Middleware::JsonParser" => McCracken::Middleware::JsonParser
-)

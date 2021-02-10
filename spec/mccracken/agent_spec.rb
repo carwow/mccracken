@@ -1,20 +1,20 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
 describe McCracken::Agent do
-  describe '#get' do
-    it 'returns a faraday response' do
+  describe "#get" do
+    it "returns a faraday response" do
       stub_api_request(:albums)
 
-      agent = McCracken::Agent.new('/albums')
+      agent = McCracken::Agent.new("/albums")
       expect(agent.get).to have_data(:albums)
     end
 
-    context 'when using a query' do
-      it 'returns the parsed response' do
+    context "when using a query" do
+      it "returns the parsed response" do
         stub_api_request(:albums_include_artist)
 
-        agent = McCracken::Agent.new('/albums')
-        params = { include: 'artist' }
+        agent = McCracken::Agent.new("/albums")
+        params = {include: "artist"}
 
         response = agent.get(params: params)
         expect(response).to have_data(:albums_include_artist)
@@ -22,8 +22,8 @@ describe McCracken::Agent do
     end
   end
 
-  pending '#post'
-  pending '#patch'
-  pending '#delete'
-  pending '#put'
+  pending "#post"
+  pending "#patch"
+  pending "#delete"
+  pending "#put"
 end

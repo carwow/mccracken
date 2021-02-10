@@ -16,7 +16,7 @@ class Album
   end
 
   def initialize(document)
-    @id    = document.id
+    @id = document.id
     @title = document.attributes[:title]
   end
 end

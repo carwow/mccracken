@@ -63,27 +63,27 @@ module McCracken
     # * jsonapi: an object describing the server's implementation
     # * links: a links object related to the primary data.
     def collection
-      raise Exception, 'IMPLEMENT ERRORS JERK' if errors?
-      raise McCracken::Error, 'Use ResponseMapper#resource on single resource' unless collection?
+      raise McCracken::Error, "Response is an error payload" if errors?
+      raise McCracken::Error, "Use ResponseMapper#resource on single resource" unless collection?
 
       # Make each item in :data its own document, stick included into that document
-      records = @body[:data].each_with_object([]) do |resource, agg|
-        json = { data: resource }
+      records = @body[:data].each_with_object([]) { |resource, agg|
+        json = {data: resource}
         json[:included] = @body[:included] if @body[:included]
         agg << json
-      end
+      }
 
       Collection.new(
         records.map { |datum| McCracken.factory(datum) },
-        meta:    @body[:meta],
+        meta: @body[:meta],
         jsonapi: @body[:jsonapi],
-        links:   @body[:links]
+        links: @body[:links]
       )
     end
 
     def resource
-      raise Exception, 'IMPLEMENT ERRORS JERK' if errors?
-      raise McCracken::Error, 'Use ResponseMapper#collection on collections' unless resource?
+      raise McCracken::Error, "Response is an error payload" if errors?
+      raise McCracken::Error, "Use ResponseMapper#collection on collections" unless resource?
 
       McCracken.factory(@body)
     end

@@ -1,4 +1,4 @@
-require 'spec_helper'
+# frozen_string_literal: true
 
 describe McCracken::Middleware::JsonParser, type: :response do
   let(:document) { response_body(:albums_include_artist) }
@@ -15,12 +15,12 @@ describe McCracken::Middleware::JsonParser, type: :response do
       request_headers: Faraday::Utils::Headers.new({}),
       response_headers: Faraday::Utils::Headers.new({})
     }
-    env[:response_headers]['content-type'] = 'application/vnd.api+json'
+    env[:response_headers]["content-type"] = "application/vnd.api+json"
     env
   end
 
-  context 'when the body is present' do
-    it 'parses the body as JSON' do
+  context "when the body is present" do
+    it "parses the body as JSON" do
       env = faraday_env(document)
       body = middleware.call(env).env.body
 
@@ -28,9 +28,9 @@ describe McCracken::Middleware::JsonParser, type: :response do
     end
   end
 
-  context 'when the body is empty' do
-    it 'returns an empty hash' do
-      env = faraday_env('')
+  context "when the body is empty" do
+    it "returns an empty hash" do
+      env = faraday_env("")
       body = middleware.call(env).env.body
       expect(body).to eq({})
     end

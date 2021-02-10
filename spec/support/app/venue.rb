@@ -2,8 +2,8 @@
 class Venue
   def self.mccracken
     return @mccracken if @mccracken
-    @mccracken = McCracken::Client.new.configure do |c|
+    @mccracken = McCracken::Client.new.configure { |c|
       c.type = :venues
-    end
+    }
   end
 end

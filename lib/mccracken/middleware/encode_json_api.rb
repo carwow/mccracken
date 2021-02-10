@@ -2,10 +2,10 @@ module McCracken
   module Middleware
     # A Faraday Middleware for performing {json:api} operations
     class EncodeJsonApi < Faraday::Middleware
-      CONTENT_TYPE = 'Content-Type'.freeze
-      ACCEPT       = 'Accept'.freeze
-      MIME_TYPE    = 'application/vnd.api+json'.freeze
-      USER_AGENT   = 'User-Agent'.freeze
+      CONTENT_TYPE = "Content-Type".freeze
+      ACCEPT = "Accept".freeze
+      MIME_TYPE = "application/vnd.api+json".freeze
+      USER_AGENT = "User-Agent".freeze
 
       def initialize(app, key_formatter = nil)
         super(app)
@@ -37,20 +37,15 @@ module McCracken
         has_body?(env) && (type.empty? || type == MIME_TYPE)
       end
 
-      # rubocop:disable Style/PredicateName
       def has_body?(env)
         (body = env[:body]) && !(body.respond_to?(:to_str) && body.empty?)
       end
 
       def request_type(env)
         type = env[:request_headers][CONTENT_TYPE].to_s
-        type = type.split(';', 2).first if type.index(';')
+        type = type.split(";", 2).first if type.index(";")
         type
       end
     end
   end
 end
-
-Faraday::Request.register_middleware(
-  :"McCracken::Middleware::EncodeJsonApi" => McCracken::Middleware::EncodeJsonApi
-)

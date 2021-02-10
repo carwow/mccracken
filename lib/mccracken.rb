@@ -1,31 +1,37 @@
-require 'json'
-require 'cgi'
-require 'faraday'
-require 'faraday_middleware'
-require 'bigdecimal'
+require "json"
+require "cgi"
+require "faraday"
+require "faraday_middleware"
+require "bigdecimal"
+require "zeitwerk"
 
-require 'mccracken/version'
-require 'mccracken/agent'
-require 'mccracken/attribute'
-require 'mccracken/client'
-require 'mccracken/collection'
-require 'mccracken/connection'
-require 'mccracken/document'
-require 'mccracken/key_formatter'
-require 'mccracken/middleware/encode_json_api'
-require 'mccracken/middleware/json_parser'
-require 'mccracken/resource'
-require 'mccracken/response_mapper'
-require 'mccracken/query'
+Zeitwerk::Loader.for_gem.tap do |loader|
+  loader.inflector.inflect "mccracken" => "McCracken"
+  loader.setup
+end
 
-# The McCracked {json:api} client library
+Faraday::Request.register_middleware(
+  "McCracken::Middleware::EncodeJsonApi": McCracken::Middleware::EncodeJsonApi
+)
+
+Faraday::Response.register_middleware(
+  "McCracken::Middleware::JsonParser": McCracken::Middleware::JsonParser
+)
+
+# The McCracken {json:api} client library
 module McCracken
   class Error < StandardError; end
+
   class UnsupportedSortDirectionError < McCracken::Error; end
+
   class UnrecognizedKeyFormatter < McCracken::Error; end
+
   class RelationshipNotIncludedError < McCracken::Error; end
+
   class RelationshipNotFound < McCracken::Error; end
+
   class ClientNotSet < McCracken::Error; end
+
   @registered_types = {}
 
   class << self
@@ -34,9 +40,9 @@ module McCracken
     # @return [McCracken::Document,~McCracken::Resource]
     def factory(document)
       document = McCracken::Document.new(document) if document.is_a?(Hash)
-      klass    = McCracken.lookup_type(document.type)
+      klass = McCracken.lookup_type(document.type)
 
-      if klass && klass.respond_to?(:mccracken_initializer)
+      if klass&.respond_to?(:mccracken_initializer)
         klass.mccracken_initializer(document)
       else
         document

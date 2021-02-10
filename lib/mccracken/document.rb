@@ -1,4 +1,4 @@
-require 'core_ext/object/deep_dup'
+require "core_ext/object/deep_dup"
 
 module McCracken
   # An abstraction layer between the Resource and the JSON Object it represents
@@ -7,22 +7,22 @@ module McCracken
     attr_reader :type
 
     def initialize(jsonapi_document)
-      @id   = jsonapi_document[:data][:id]
+      @id = jsonapi_document[:data][:id]
       @type = jsonapi_document[:data][:type].to_sym
       @jsonapi_document = jsonapi_document
 
       if jsonapi_document[:data] && jsonapi_document[:data][:attributes]
         @original_attributes = jsonapi_document[:data][:attributes]
-        @attributes          = jsonapi_document[:data][:attributes].deep_dup
+        @attributes = jsonapi_document[:data][:attributes].deep_dup
       else
         @original_attributes = {}
-        @attributes          = {}
+        @attributes = {}
       end
     end
 
     # @return [Hash] hash for persisting this JSON API Resource via POST/PATCH/PUT
     def payload
-      doc = { data: { type: @type } }
+      doc = {data: {type: @type}}
       if id
         doc[:data][:id] = id
         doc[:data][:attributes] = changed
@@ -67,10 +67,10 @@ module McCracken
 
     def save(agent)
       response = if id
-                   agent.patch(id: id.to_s, body: payload)
-                 else
-                   agent.post(body: payload)
-                 end
+        agent.patch(id: id.to_s, body: payload)
+      else
+        agent.post(body: payload)
+      end
 
       McCracken::Document.new(response.body)
     end
@@ -110,7 +110,7 @@ module McCracken
       else
         raise RelationshipNotFound, <<-ERR
         The relationship `#{name}` was called, but does not exist on the document.
-        Relationships available are: #{relationships.keys.join(',')}
+        Relationships available are: #{relationships.keys.join(",")}
         ERR
       end
     end
@@ -122,10 +122,10 @@ module McCracken
     # @param [Hash] relationship from JSONAPI relationships hash
     # @return [McCracken::Document,nil] the included relationship, if found
     private def find_included_item(relationship)
-      resource = included.find do |included_resource|
+      resource = included.find { |included_resource|
         included_resource[:type] == relationship[:type] &&
           included_resource[:id] == relationship[:id]
-      end
+      }
 
       unless resource
         raise RelationshipNotIncludedError, <<-ERR

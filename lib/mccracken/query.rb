@@ -7,19 +7,19 @@ module McCracken
     #
     # @param [McCracken::Client] client
     def initialize(client = nil)
-      @client   = client
-      @headers  = {}
+      @client = client
+      @headers = {}
       @values = {
         include: [],
-        fields:  [],
-        filter:  [],
-        sort:    [],
-        page:    {}
+        fields: [],
+        filter: [],
+        sort: [],
+        page: {}
       }
     end
 
     def fetch
-      raise McCracken::ClientNotSet, 'Client was not set. Query#new(client)' unless @client
+      raise McCracken::ClientNotSet, "Client was not set. Query#new(client)" unless @client
       response = @client.agent.get(params: to_params, headers: @headers)
       ResponseMapper.new(response.body).collection
     end
@@ -29,14 +29,14 @@ module McCracken
     # @param [#to_s] path to custom endpoint off of resource
     # @option [Boolean] collection: true does this endpoint return a collection or a single resource
     def fetch_from(endpoint, collection: true)
-      raise McCracken::ClientNotSet, 'Client was not set. Query#new(client)' unless @client
-      path = [@client.agent.negotiate_path, endpoint.gsub(%r{^/}, '')].join('/')
+      raise McCracken::ClientNotSet, "Client was not set. Query#new(client)" unless @client
+      path = [@client.agent.negotiate_path, endpoint.gsub(%r{^/}, "")].join("/")
       response = @client.agent.get(path: path, params: to_params, headers: @headers)
       ResponseMapper.new(response.body).send(collection ? :collection : :resource)
     end
 
     def find(id)
-      raise McCracken::ClientNotSet, 'Client was not set. Query#new(client)' unless @client
+      raise McCracken::ClientNotSet, "Client was not set. Query#new(client)" unless @client
       response = @client.agent.get(id: id, params: to_params, headers: @headers)
       ResponseMapper.new(response.body).resource
     end
@@ -52,11 +52,11 @@ module McCracken
 
     def to_params
       str = {}
-      str[:filter]  = filter_to_query_value unless @values[:filter].empty?
-      str[:fields]  = fields_to_query_value unless @values[:fields].empty?
+      str[:filter] = filter_to_query_value unless @values[:filter].empty?
+      str[:fields] = fields_to_query_value unless @values[:fields].empty?
       str[:include] = include_to_query_value unless @values[:include].empty?
-      str[:sort]    = sort_to_query_value unless @values[:sort].empty?
-      str[:page]    = @values[:page] unless @values[:page].empty?
+      str[:sort] = sort_to_query_value unless @values[:sort].empty?
+      str[:page] = @values[:page] unless @values[:page].empty?
       str
     end
 
@@ -147,7 +147,7 @@ module McCracken
     protected
 
     def sort_to_query_value
-      @values[:sort].map do |item|
+      @values[:sort].map { |item|
         if item.is_a?(Hash)
           item.to_a.map do |name, dir|
             dir.to_sym == :desc ? "-#{name}" : name.to_s
@@ -155,22 +155,22 @@ module McCracken
         else
           item.to_s
         end
-      end.join(',')
+      }.join(",")
     end
 
     def fields_to_query_value
-      values = @values[:fields].each_with_object({}) do |hash_arg, acc|
+      values = @values[:fields].each_with_object({}) { |hash_arg, acc|
         hash_arg.each do |k, v|
           acc[k] ||= []
           v.is_a?(Array) ? acc[k] += v : acc[k] << v
           acc[k].map(&:to_s).uniq!
         end
-      end
-      values.map { |k, v| [k, v.join(',')] }.to_h
+      }
+      values.map { |k, v| [k, v.join(",")] }.to_h
     end
 
     def include_to_query_value
-      @values[:include].map(&:to_s).sort.join(',')
+      @values[:include].map(&:to_s).sort.join(",")
     end
 
     # Since the filter param's format isn't specified in the [spec](http://jsonapi.org/format/#fetching-filtering)
@@ -198,14 +198,14 @@ module McCracken
     #   end
     #
     def filter_to_query_value
-      values = @values[:filter].each_with_object({}) do |hash_arg, acc|
+      values = @values[:filter].each_with_object({}) { |hash_arg, acc|
         hash_arg.each do |k, v|
           acc[k] ||= []
           v.is_a?(Array) ? acc[k] += v : acc[k] << v
           acc[k].uniq!
         end
-      end
-      values.map { |k, v| [k, v.join(',')] }.to_h
+      }
+      values.map { |k, v| [k, v.join(",")] }.to_h
     end
 
     def validate_sort_args(hashes)
@@ -213,7 +213,7 @@ module McCracken
         hash.each do |_k, v|
           unless %i[desc asc].include?(v.to_sym)
             raise McCracken::UnsupportedSortDirectionError,
-                  "Unknown direction '#{v}'. Use :asc or :desc"
+              "Unknown direction '#{v}'. Use :asc or :desc"
           end
         end
       end

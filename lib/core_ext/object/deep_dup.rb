@@ -1,4 +1,4 @@
-require 'core_ext/object/duplicable'
+require "core_ext/object/duplicable"
 
 # Taken from ActiveSupport
 
@@ -46,7 +46,6 @@ class Hash
   def deep_dup
     hash = dup
     each_pair do |key, value|
-      # rubocop:disable Style/CaseEquality
       if key.frozen? && ::String === key
         hash[key] = value.deep_dup
       else

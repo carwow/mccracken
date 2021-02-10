@@ -9,7 +9,7 @@ module McCracken
 
     CONNECTION_OPTIONS = [:response_key_format].freeze
     FARADAY_OPTIONS = %i[request proxy ssl builder url
-                         parallel_manager params headers builder_class].freeze
+      parallel_manager params headers builder_class].freeze
 
     # Create a new connection. A connection serves as a thin wrapper around a
     # a faraday connection that includes two pieces of middleware for handling
@@ -110,14 +110,14 @@ module McCracken
       @block = block
 
       faraday_options = @options.select { |key, _value| FARADAY_OPTIONS.include?(key.to_sym) }
-      @faraday = Faraday.new(faraday_options) do |conn|
-        yield conn if block_given?
+      @faraday = Faraday.new(faraday_options) { |conn|
+        yield conn if block
 
         conn.request :"McCracken::Middleware::EncodeJsonApi", key_formatter
         conn.response :"McCracken::Middleware::JsonParser", key_formatter
 
         conn.adapter(*@options.fetch(:adapter, Faraday.default_adapter))
-      end
+      }
     end
 
     (CONNECTION_OPTIONS + FARADAY_OPTIONS).each do |option_writer|

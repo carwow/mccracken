@@ -7,10 +7,10 @@ module McCracken
 
     def initialize(name, cast_type, options = {})
       options[:default] ||= nil
-      options[:array]   ||= false
-      @name      = name
+      options[:array] ||= false
+      @name = name
       @cast_type = cast_type
-      @options   = options
+      @options = options
     end
 
     # Process a raw JSON value
@@ -28,7 +28,6 @@ module McCracken
       end
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity
     def cast_value(value)
       return nil if value.nil?
 
@@ -40,7 +39,7 @@ module McCracken
       when :integer, :to_i, Integer
         value.to_i
       when :bigdecimal
-        BigDecimal.new(value.to_s)
+        BigDecimal(value.to_s)
       when :float, :to_f, Float
         value.to_f
       when :date, Date
